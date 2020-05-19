@@ -56,9 +56,7 @@ class MinimumSpanningTree:
 
 
 def load_image_pixels():
-    image = Image.open(args.image_file_path, 'r').convert('RGB')
-    pixels = np.array(image)
-    pixels_of_image = np.array(pixels)
+    pixels_of_image = np.array(Image.open(args.image_file_path, 'r').convert('RGB'))
     return pixels_of_image
 
 
