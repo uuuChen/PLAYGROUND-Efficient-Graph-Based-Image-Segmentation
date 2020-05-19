@@ -125,34 +125,6 @@ class GraphBasedImageSegment:
                 graph['MSTrees'].remove(b_MSTree)
         return graph
 
-    def _get_most_common_neighbor(self, image_pixels, graph, index, image_height, image_width):
-        row_index, col_index = index
-        rows = [row_index-1, row_index, row_index+1]
-        cols = [col_index-1, col_index, col_index+1]
-        if row_index == 0:
-            rows = rows[1:]
-        if row_index == image_height-1:
-            rows = rows[:-1]
-        if col_index == 0:
-            cols = cols[1:]
-        if col_index == image_width-1:
-            cols = cols[:-1]
-        tree2count = dict()
-        tree2nodes = dict()
-        for i in rows:
-            for j in cols:
-                node = graph['index2node'][(i, j)]
-                if image_pixels[i, j].all() == 0 or node.belong_tree is None:
-                    continue
-                tree2count.setdefault(node.belong_tree, 0)
-                tree2nodes.setdefault(node.belong_tree, list())
-                tree2count[node.belong_tree] += 1
-                tree2nodes[node.belong_tree].append(node)
-        sorted(tree2count.items(), key=lambda x: x[1], reverse=True)
-        print(tree2count.items())
-        most_common_tree = list(tree2count.keys())[0]
-        return tree2nodes[most_common_tree][0]
-
     def _show_segmented_image(self, image_pixels, k, graphs, seg_by_rgb=False):
         print(f"k: {k}\tcomponents: {len(graphs[0]['MSTrees'])}\t")
         rand_colors = [self.rand_rgb() for _ in range(len(graphs[0]['MSTrees']))]
@@ -187,15 +159,6 @@ class GraphBasedImageSegment:
             # assign colors to pixels
             for index in tree_nodes_indices:
                 seg_image_pixels[index] = rand_colors[i]
-
-        # assign color to unassigned pixels
-        # if seg_by_rgb:
-        #     unassigned_cond = np.where(seg_image_pixels == (0, 0, 0))
-        #     unassigned_indices = list(zip(unassigned_cond[0], unassigned_cond[1]))
-        #     for index in unassigned_indices:
-        #         node = self._get_most_common_neighbor(seg_image_pixels, graphs[0], index, image_pixels.shape[0], image_pixels.shape[1])
-        #         # node.belong_tree.join(node, graphs[0]['index2node'][index], self.euclidean_distance())
-        #         seg_image_pixels[index] = seg_image_pixels[node.index2d]
 
         ori_image = Image.fromarray(np.uint8(image_pixels))
         seg_image = Image.fromarray(np.uint8(seg_image_pixels))
