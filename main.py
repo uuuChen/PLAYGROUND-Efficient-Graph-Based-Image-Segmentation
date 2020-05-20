@@ -99,7 +99,7 @@ class GraphBasedImageSegment:
                 if i != height - 1 and j != width - 1:  # not the last row or col, to lower right pixel
                     to_index, to_pixel = (i+1, j+1), image_pixels[i+1, j+1]
                     indices2edgeDist[(cur_index, to_index)] = self.euclidean_distance(cur_pixel, to_pixel)
-                if i != height - 1 and j != 0:  # not the last  or the first col, to lower left pixel
+                if i != height - 1 and j != 0:  # not the last row or the first col, to lower left pixel
                     to_index, to_pixel = (i+1, j-1), image_pixels[i+1, j-1]
                     indices2edgeDist[(cur_index, to_index)] = self.euclidean_distance(cur_pixel, to_pixel)
 
